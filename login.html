@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantCare AI | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+         :root {
+            --forest: #1a3a2a;
+            --leaf: #2d6a4f;
+            --mint: #52b788;
+            --lime: #95d5b2;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+        }
+        
+        body {
+            min-height: 100vh;
+            background: var(--forest);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.25;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .blob1 {
+            width: 500px;
+            height: 500px;
+            background: var(--mint);
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+        
+        .blob2 {
+            width: 400px;
+            height: 400px;
+            background: var(--leaf);
+            bottom: -100px;
+            right: -100px;
+            animation-delay: 3s;
+        }
+        
+        .blob3 {
+            width: 300px;
+            height: 300px;
+            background: var(--lime);
+            top: 50%;
+            left: 50%;
+            animation-delay: 5s;
+        }
+        
+        @keyframes float {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1)
+            }
+            33% {
+                transform: translate(30px, -30px) scale(1.05)
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.95)
+            }
+        }
+        
+        .leaf-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .leaf {
+            position: absolute;
+            opacity: 0.06;
+            animation: drift linear infinite;
+        }
+        
+        @keyframes drift {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0
+            }
+            10% {
+                opacity: 0.06
+            }
+            90% {
+                opacity: 0.06
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0
+            }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .brand-side {
+            color: var(--white);
+        }
+        
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--lime);
+            margin-bottom: 32px;
+        }
+        
+        .brand-badge::before {
+            content: '●';
+            font-size: 8px;
+            color: var(--mint);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1
+            }
+            50% {
+                opacity: 0.3
+            }
+        }
+        
+        .brand-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            margin-bottom: 20px;
+        }
+        
+        .brand-title span {
+            background: linear-gradient(135deg, var(--lime), var(--mint));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .brand-desc {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.55);
+            line-height: 1.7;
+            max-width: 380px;
+            margin-bottom: 48px;
+        }
+        
+        .stats-row {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .stat {
+            border-left: 2px solid var(--mint);
+            padding-left: 16px;
+        }
+        
+        .stat-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 48px 40px;
+        }
+        
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--leaf), var(--mint));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 28px;
+            box-shadow: 0 8px 24px rgba(82, 183, 136, 0.3);
+        }
+        
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+        
+        .card-sub {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 36px;
+        }
+        
+        .field-label {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .input-wrap {
+            position: relative;
+            margin-bottom: 16px;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            opacity: 0.4;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            color: var(--white);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            outline: none;
+        }
+        
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+        }
+        
+        input:focus {
+            border-color: var(--mint);
+            background: rgba(82, 183, 136, 0.08);
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.15);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--leaf), var(--mint));
+            color: var(--white);
+            box-shadow: 0 4px 20px rgba(82, 183, 136, 0.35);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(82, 183, 136, 0.45);
+        }
+        
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            margin-top: 10px;
+        }
+        
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        #otpSection {
+            display: none;
+            margin-top: 8px;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .divider span {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.25);
+        }
+        
+        .otp-hint {
+            text-align: center;
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.35);
+            margin-bottom: 12px;
+        }
+        
+        .otp-hint span {
+            color: var(--mint);
+        }
+        
+        .trust-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 24px;
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.25);
+        }
+        
+        .trust-row span {
+            color: var(--mint);
+        }
+        
+        @media(max-width:768px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 24px;
+                gap: 32px
+            }
+            .brand-side {
+                text-align: center
+            }
+            .brand-desc {
+                margin: 0 auto 32px
+            }
+            .stats-row {
+                justify-content: center
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-blob blob1"></div>
+    <div class="bg-blob blob2"></div>
+    <div class="bg-blob blob3"></div>
+    <div class="leaf-bg" id="leafBg"></div>
+    <div class="container">
+        <div class="brand-side">
+            <div class="brand-badge">AI Powered · Plant Health</div>
+            <h1 class="brand-title">Detect.<br><span>Protect.</span><br>Grow.</h1>
+            <p class="brand-desc">Upload a leaf photo and our deep learning model identifies plant diseases instantly — with 96.73% accuracy across 38 conditions.</p>
+            <div class="stats-row">
+                <div class="stat">
+                    <div class="stat-num">96.73%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">38</div>
+                    <div class="stat-label">Diseases</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">&lt;3s</div>
+                    <div class="stat-label">Detection</div>
+                </div>
+            </div>
+        </div>
+        <div class="login-card">
+            <div class="card-icon">🌿</div>
+            <div class="card-title">Welcome back</div>
+            <div class="card-sub">Sign in to access your dashboard</div>
+            <label class="field-label">Mobile Number</label>
+            <div class="input-wrap">
+                <span class="input-icon">📱</span>
+                <input type="tel" id="phone" placeholder="Enter 10-digit number" maxlength="10">
+            </div>
+            <button class="btn btn-primary" onclick="sendOTP()">Send OTP →</button>
+            <div id="otpSection">
+                <div class="divider"><span>OTP sent to your number</span></div>
+                <label class="field-label">Enter OTP</label>
+                <div class="input-wrap">
+                    <span class="input-icon">🔐</span>
+                    <input type="text" id="otp" placeholder="4-digit OTP" maxlength="4">
+                </div>
+                <p class="otp-hint">Check the popup for your <span>demo OTP</span></p>
+                <button class="btn btn-primary" onclick="verifyOTP()">Verify & Continue →</button>
+                <button class="btn btn-ghost" onclick="sendOTP()">Resend OTP</button>
+            </div>
+            <div class="trust-row">🔒 <span>Secure</span> · No data stored · Works offline</div>
+        </div>
+    </div>
+    <script>
+        const leafBg = document.getElementById('leafBg');
+        const emojis = ['🌿', '🍃', '🌱', '🍀', '🌾'];
+        for (let i = 0; i < 18; i++) {
+            const leaf = document.createElement('div');
+            leaf.className = 'leaf';
+            leaf.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            leaf.style.left = Math.random() * 100 + 'vw';
+            leaf.style.animationDuration = (12 + Math.random() * 16) + 's';
+            leaf.style.animationDelay = (Math.random() * 20) + 's';
+            leaf.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
+            leafBg.appendChild(leaf);
+        }
+        let generatedOTP = "";
+
+        function sendOTP() {
+            const phone = document.getElementById("phone").value;
+            if (phone.length !== 10) {
+                alert("Enter a valid 10-digit mobile number");
+                return;
+            }
+            generatedOTP = Math.floor(1000 + Math.random() * 9000);
+            alert("Demo OTP: " + generatedOTP);
+            document.getElementById("otpSection").style.display = "block";
+        }
+
+        function verifyOTP() {
+            const entered = document.getElementById("otp").value;
+            if (entered == generatedOTP) {
+                localStorage.setItem("phone", document.getElementById("phone").value);
+                window.location.href = "dashboard.html";
+            } else {
+                alert("Invalid OTP! Please try again.");
+            }
+        }
+    </script>
+</body>
+
+</html>

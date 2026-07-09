@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantCare AI | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+         :root {
+            --forest: #072a19;
+            --leaf: #2d6a4f;
+            --mint: #52b788;
+            --lime: #95d5b2;
+            --cream: #f8f9f0;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --danger: #e07070;
+            --warn: #e0b870;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: var(--forest);
+            font-family: 'Inter', sans-serif;
+            color: var(--white);
+            overflow-x: hidden;
+        }
+        /* BG */
+        
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        
+        .blob1 {
+            width: 600px;
+            height: 600px;
+            background: var(--mint);
+            top: -200px;
+            right: -200px;
+        }
+        
+        .blob2 {
+            width: 400px;
+            height: 400px;
+            background: var(--leaf);
+            bottom: -100px;
+            left: -100px;
+        }
+        /* NAV */
+        
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(69, 127, 98, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0 40px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .nav-logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--leaf), var(--mint));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .nav-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--leaf), var(--mint));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            padding: 7px 16px;
+            background: rgba(38, 175, 91, 0.91);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(12, 131, 40, 0.12);
+            color: var(--white);
+        }
+        /* MAIN */
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 48px 40px;
+        }
+        
+        .page-header {
+            margin-bottom: 40px;
+        }
+        
+        .page-eyebrow {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--mint);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+        
+        .page-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+        }
+        
+        .page-title span {
+            background: linear-gradient(135deg, var(--lime), var(--mint));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        /* STATS BAR */
+        
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .stat-icon.green {
+            background: rgba(81, 176, 132, 0.15);
+        }
+        
+        .stat-icon.blue {
+            background: rgba(82, 136, 183, 0.15);
+        }
+        
+        .stat-icon.amber {
+            background: rgba(183, 136, 82, 0.15);
+        }
+        
+        .stat-val {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-lbl {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+        /* MAIN GRID */
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        
+        .panel {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px;
+        }
+        
+        .panel-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        
+        .panel-sub {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 28px;
+        }
+        /* UPLOAD ZONE */
+        
+        .upload-zone {
+            border: 2px dashed rgba(95, 204, 153, 0.3);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            margin-bottom: 20px;
+            background: rgba(57, 106, 83, 0.03);
+        }
+        
+        .upload-zone:hover {
+            border-color: var(--mint);
+            background: rgba(54, 135, 97, 0.07);
+        }
+        
+        .upload-zone.has-image {
+            border-color: var(--mint);
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .upload-zone input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .upload-placeholder {
+            pointer-events: none;
+        }
+        
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+        
+        .upload-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .upload-text strong {
+            color: var(--mint);
+        }
+        
+        #preview {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: none;
+            border-radius: 14px;
+        }
+        
+        .detect-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--leaf), var(--mint));
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(48, 125, 89, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .detect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(42, 122, 85, 0.45);
+        }
+        
+        .detect-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        /* RESULT PANEL */
+        
+        .result-empty {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .result-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        .result-empty-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .result-card {
+            display: none;
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .result-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--mint);
+            animation: pulse 2s infinite;
+            flex-shrink: 0;
+        }
+        
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8)
+            }
+        }
+        
+        .result-status {
+            font-size: 0.78rem;
+            color: var(--mint);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 500;
+        }
+        
+        .disease-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+        
+        .disease-name.healthy {
+            color: var(--lime);
+        }
+        
+        .disease-name.disease {
+            color: #ffb347;
+        }
+        
+        .confidence-wrap {
+            margin: 20px 0;
+        }
+        
+        .conf-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 8px;
+        }
+        
+        .conf-bar {
+            height: 8px;
+            background: rgba(123, 19, 19, 0.1);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+        
+        .conf-fill {
+            height: 100%;
+            border-radius: 100px;
+            background: linear-gradient(90deg, var(--leaf), var(--mint));
+            transition: width 1s ease;
+        }
+        
+        .result-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .tag {
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .tag-green {
+            background: rgba(82, 183, 136, 0.15);
+            color: var(--mint);
+            border: 1px solid rgba(3, 65, 36, 0.2);
+        }
+        
+        .tag-amber {
+            background: rgba(224, 184, 112, 0.15);
+            color: var(--warn);
+            border: 1px solid rgba(224, 184, 112, 0.2);
+        }
+        
+        .advice-box {
+            margin-top: 24px;
+            padding: 16px;
+            background: rgba(82, 183, 136, 0.08);
+            border: 1px solid rgba(82, 183, 136, 0.15);
+            border-radius: 12px;
+        }
+        
+        .advice-title {
+            font-size: 0.75rem;
+            color: var(--mint);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .advice-text {
+            font-size: 0.88rem;
+            color: rgba(255, 255, 255, 0.65);
+            line-height: 1.6;
+        }
+        
+        .loading-state {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(82, 183, 136, 0.2);
+            border-top-color: var(--mint);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+        
+        .loading-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+        /* HOW IT WORKS */
+        
+        .how-section {
+            margin-top: 24px;
+            grid-column: 1/-1;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .step {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .step-num {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--leaf), var(--mint));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin: 0 auto 12px;
+        }
+        
+        .step-icon {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+        
+        .step-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .step-desc {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.35);
+            line-height: 1.5;
+        }
+        
+        @media(max-width:900px) {
+            .main-grid {
+                grid-template-columns: 1fr
+            }
+            .stats-bar {
+                grid-template-columns: 1fr
+            }
+            .steps {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+        
+        @media(max-width:600px) {
+            main {
+                padding: 24px 20px
+            }
+            nav {
+                padding: 0 20px
+            }
+            .steps {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-blob blob1"></div>
+    <div class="bg-blob blob2"></div>
+
+    <nav>
+        <div class="nav-logo">
+            <div class="nav-logo-icon">🌿</div>
+            PlantCare AI
+        </div>
+        <div class="nav-right">
+            <div class="nav-user">
+                <div class="nav-avatar" id="avatarInitial">U</div>
+                <span id="navPhone"></span>
+            </div>
+            <button class="logout-btn" onclick="logout()">Sign out</button>
+        </div>
+    </nav>
+
+    <main>
+        <div class="page-header">
+            <div class="page-eyebrow">🌱 AI Disease Detection</div>
+            <h1 class="page-title">Plant Health </h1>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-icon green">🎯</div>
+                <div>
+                    <div class="stat-val">96.73%</div>
+                    <div class="stat-lbl">Model Accuracy</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue">🔬</div>
+                <div>
+                    <div class="stat-val">38</div>
+                    <div class="stat-lbl">Disease Classes</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon amber">⚡</div>
+                <div>
+                    <div class="stat-val">&lt;3s</div>
+                    <div class="stat-lbl">Detection Speed</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Upload Panel -->
+            <div class="panel">
+                <div class="panel-title">Upload Leaf Image</div>
+                <div class="panel-sub">Supports JPG, PNG · Best results with clear, well-lit photos</div>
+
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="imageInput" accept="image/*">
+                    <div class="upload-placeholder" id="uploadPlaceholder">
+                        <div class="upload-icon">🍃</div>
+                        <div class="upload-text"><strong>Click to upload</strong> or drag & drop<br>a leaf photo here</div>
+                    </div>
+                    <img id="preview" src="" alt="Preview">
+                </div>
+
+                <button class="detect-btn" id="detectBtn" onclick="detect()" disabled>
+        <span>🔍</span> Analyze Leaf
+      </button>
+            </div>
+
+            <!-- Result Panel -->
+            <div class="panel">
+                <div class="panel-title">Prediction Result</div>
+                <div class="panel-sub">AI-powered disease identification</div>
+
+                <div class="result-empty" id="resultEmpty">
+                    <div class="result-empty-icon">🌿</div>
+                    <div class="result-empty-text">Upload a leaf image and click<br>Analyze to see results here</div>
+                </div>
+
+                <div class="loading-state" id="loadingState">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Analyzing leaf patterns...</div>
+                </div>
+
+                <div class="result-card" id="resultCard">
+                    <div class="result-header">
+                        <div class="result-dot"></div>
+                        <div class="result-status">Analysis Complete</div>
+                    </div>
+                    <div class="disease-name" id="diseaseName"></div>
+                    <div class="confidence-wrap">
+                        <div class="conf-label"><span>Confidence Score</span><span id="confPct"></span></div>
+                        <div class="conf-bar">
+                            <div class="conf-fill" id="confFill" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="result-tags" id="resultTags"></div>
+                    <div class="advice-box" id="adviceBox">
+                        <div class="advice-title">💡 Recommendation</div>
+                        <div class="advice-text" id="adviceText"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How it works -->
+            <div class="how-section">
+                <div class="panel-title">How It Works</div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-num">01</div>
+                        <div class="step-icon">📸</div>
+                        <div class="step-title">Upload Photo</div>
+                        <div class="step-desc">Take a clear photo of the affected leaf and upload it</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">02</div>
+                        <div class="step-icon">⚙️</div>
+                        <div class="step-title">Preprocessing</div>
+                        <div class="step-desc">Image resized to 224×224 and normalized for the model</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">03</div>
+                        <div class="step-icon">🧠</div>
+                        <div class="step-title">AI Analysis</div>
+                        <div class="step-desc">MobileNetV2 deep learning model analyzes visual patterns</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">04</div>
+                        <div class="step-icon">✅</div>
+                        <div class="step-title">Get Results</div>
+                        <div class="step-desc">Disease name and confidence score returned instantly</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const phone = localStorage.getItem("phone");
+        if (!phone) window.location.href = "login.html";
+        document.getElementById("navPhone").textContent = phone;
+        document.getElementById("avatarInitial").textContent = phone.charAt(0);
+
+        const imageInput = document.getElementById("imageInput");
+        const preview = document.getElementById("preview");
+        const uploadZone = document.getElementById("uploadZone");
+        const uploadPlaceholder = document.getElementById("uploadPlaceholder");
+        const detectBtn = document.getElementById("detectBtn");
+
+        imageInput.addEventListener("change", () => {
+            const file = imageInput.files[0];
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = "block";
+                uploadPlaceholder.style.display = "none";
+                uploadZone.classList.add("has-image");
+                detectBtn.disabled = false;
+            }
+        });
+
+        const advice = {
+            "healthy": "Your plant looks healthy! Continue regular watering and ensure adequate sunlight.",
+            "blight": "Remove and destroy infected leaves immediately. Apply copper-based fungicide. Avoid overhead watering.",
+            "mold": "Improve air circulation around the plant. Apply fungicide. Remove infected leaves.",
+            "spot": "Apply appropriate fungicide. Remove infected debris. Avoid wetting foliage.",
+            "rust": "Apply sulfur-based fungicide. Remove infected leaves. Improve air circulation.",
+            "default": "Consult an agricultural expert for proper treatment. Isolate the affected plant."
+        };
+
+        function getAdvice(disease) {
+            const d = disease.toLowerCase();
+            if (d.includes("healthy")) return advice.healthy;
+            if (d.includes("blight")) return advice.blight;
+            if (d.includes("mold")) return advice.mold;
+            if (d.includes("spot")) return advice.spot;
+            if (d.includes("rust")) return advice.rust;
+            return advice.default;
+        }
+
+        async function detect() {
+            const file = imageInput.files[0];
+            if (!file) return;
+
+            document.getElementById("resultEmpty").style.display = "none";
+            document.getElementById("resultCard").style.display = "none";
+            document.getElementById("loadingState").style.display = "block";
+            detectBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append("image", file);
+
+            try {
+                const response = await fetch("http://localhost:5000/predict", {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await response.json();
+
+                document.getElementById("loadingState").style.display = "none";
+
+                if (data.error) {
+                    document.getElementById("resultEmpty").style.display = "block";
+                    document.getElementById("resultEmpty").querySelector(".result-empty-text").textContent = "Error: " + data.error;
+                    detectBtn.disabled = false;
+                    return;
+                }
+
+                const disease = (data.disease || data.prediction || "Unknown").replace(/_/g, " ").replace(/___/g, " - ");
+                const confidence = parseFloat(data.confidence || 0).toFixed(2);
+                const isHealthy = disease.toLowerCase().includes("healthy");
+
+                document.getElementById("diseaseName").textContent = disease;
+                document.getElementById("diseaseName").className = "disease-name " + (isHealthy ? "healthy" : "disease");
+                document.getElementById("confPct").textContent = confidence + "%";
+                setTimeout(() => {
+                    document.getElementById("confFill").style.width = confidence + "%";
+                }, 100);
+                document.getElementById("adviceText").textContent = getAdvice(disease);
+
+                const tags = document.getElementById("resultTags");
+                tags.innerHTML = "";
+                tags.innerHTML += `<span class="tag tag-green">MobileNetV2</span>`;
+                tags.innerHTML += `<span class="tag tag-green">Transfer Learning</span>`;
+                tags.innerHTML += `<span class="tag ${isHealthy ? 'tag-green' : 'tag-amber'}">${isHealthy ? '✅ Healthy' : '⚠️ Disease Detected'}</span>`;
+
+                document.getElementById("resultCard").style.display = "block";
+
+            } catch (err) {
+                document.getElementById("loadingState").style.display = "none";
+                document.getElementById("resultEmpty").style.display = "block";
+                document.getElementById("resultEmpty").querySelector(".result-empty-text").textContent = "Could not connect to server. Make sure Flask is running!";
+            }
+            detectBtn.disabled = false;
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+
+</html>
