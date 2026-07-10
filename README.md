@@ -46,5 +46,29 @@ python app.py
 - Mobile application
 - Cloud deployment
 
+## Project Screenshots
+
+### Login Page
+![Login Page](loginpg.png)
+
+### Dashboard
+![Dashboard](dashboard.png)
+
+### OTP Verification
+![OTP](demootp.png)
+
+### Testing 1
+![Testing 1](test1.png)
+
+### Testing 2
+![Testing 2](testing2.png)
+
+### Testing 3
+![Testing 3](testing3.png)
+
+### Testing 4
+![Testing 4](testing4.png)
+
+
 ## Author
 **Sayantika**
